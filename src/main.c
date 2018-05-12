@@ -42,7 +42,7 @@ int main() {
 
 	for(i = 0;(i<n);i++)
        pthread_create(&(threads[i]), NULL, funcao_thread, NULL);
-    for (i = 0; i < 3; i++) 
+    for (i = 0; i < n; i++) 
 		pthread_join(threads[i], NULL);
     
     printf("%d\n",n_primos);		
