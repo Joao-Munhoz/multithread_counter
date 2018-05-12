@@ -14,10 +14,11 @@
 #include <pthread.h>
 #include <stdint.h>
 
-int indice = 0, n = 0, n_primos = 0;
-unsigned long int vet[100];
+int indice = 0, n = 0, n_primos = 0;	
+unsigned long int vet[100];				//vetor que contem os numeros de entrada
 pthread_mutex_t lock_obtem_valor;
 pthread_mutex_t lock_primos;
+#define thread_max 4				   //numero maximo de threads a ser gerado
 
 int verifica_primo(unsigned long int primo);
 void* funcao_thread(void *arg);
@@ -40,16 +41,16 @@ int main() {
 		vet[n++] = atoi(t);
 	}	
 
-	for(i = 0;(i<n);i++)
+	for(i = 0;(i < thread_max);i++)
        pthread_create(&(threads[i]), NULL, funcao_thread, NULL);
-    for (i = 0; i < n; i++) 
+    for (i = 0; i < thread_max; i++) 
 		pthread_join(threads[i], NULL);
     
     printf("%d\n",n_primos);		
 
 	return 0;
 }
-
+//funcao que verifica se o numero e primo ou nao
 int verifica_primo(unsigned long int primo){
 	unsigned long int i, div = 0; 
 	for (i = 1; i <= primo; i++) {
@@ -66,7 +67,7 @@ int verifica_primo(unsigned long int primo){
   else
     return 0;
   }
- 
+ //funcao invocada pela thread
  void* funcao_thread(void *arg) {
   int flag;
   int64_t numero;
@@ -80,8 +81,7 @@ int verifica_primo(unsigned long int primo){
         
     pthread_mutex_lock(&lock_primos);
     n_primos += flag;
-    pthread_mutex_unlock(&lock_primos); 
-  
+    pthread_mutex_unlock(&lock_primos);   
   }
 }
 
@@ -90,7 +90,7 @@ int64_t obtem_valor(){
     if(indice < n){
         valor = vet[indice++];
         return valor;
-    }
-    return (-1);
+    }else
+   		 return (-1);
     
 }
